@@ -1,0 +1,13 @@
+<?php
+if ( isset( $this->include ) ) :
+	foreach ( $this->include as $include ) :
+?>
+<link type="text/css" rel="stylesheet" href="<?php echo $include; ?>" media="<?php echo $this->include->media; ?>" />
+<?php
+	endforeach;
+endif; ?>
+<?php if ( isset( $this->plain ) ) : ?>
+<style type="text/css" media="<?php echo $this->plain->media; ?>">
+<?php echo $this->plain->indent( 1 ); ?>
+</style>
+<?php endif; ?>

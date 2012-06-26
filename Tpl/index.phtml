@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<title><?= $title; ?></title>
+
+	</head>
+	<body>
+		<h1><?= $this->title; ?></h1>
+<?php 
+	$this->js( 'var test;', 'inline' );
+	echo $this->js( 'var test2;', 'inline' );
+	echo $this->content;
+	echo $this
+			->js( 'ligne3
+ligne4' )
+			//->append( 'jquery', '1.4.2' )
+			->append( 'test', 'ready' )
+			->indent( 2 ),
+		$this
+			->css( 'style.css' )
+			->append('rule1' )
+			->prepend( 'redbox', 'table' ),
+			'<!--[if IE 7]>' ,
+			$this->css( 'file.css', 'ie7' ), 
+			'<![endif]-->'
+	;
+?>
+	</body>
+</html>
