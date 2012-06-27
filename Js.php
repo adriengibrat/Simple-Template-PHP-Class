@@ -1,13 +1,13 @@
 <?php
 namespace Tpl;
-class Js extends Template {
-	const template = 'js';
+
+class Js extends Tpl {
+	const template = 'helpers/js';
 	static protected $_instance;
 	static protected $_type     = array( 'plain', 'include', 'ready' );
 	static public    $libraries = array(
 		'jquery'        => 'https://ajax.googleapis.com/ajax/libs/jquery/{1}/jquery.min.js',
 		'jquery-ui'     => 'https://ajax.googleapis.com/ajax/libs/jqueryui/{1}/jquery-ui.min.js',
-		//'jquery-ui-fx'  => 'jquery-ui.fx.js',
 		'mootools'      => 'https://ajax.googleapis.com/ajax/libs/mootools/{1}/mootools-yui-compressed.js',
 		'prototype'     => 'https://ajax.googleapis.com/ajax/libs/prototype/{1}/prototype.js',
 		'extcore'       => 'https://ajax.googleapis.com/ajax/libs/ext-core/{3}/ext-core.js',
@@ -32,15 +32,8 @@ class Js extends Template {
 		return $type;
 	}
 	static protected function _library ( $name, $version = null ) {
-	//static protected function library ( &$name, $version = null ) {
 		if ( isset( self::$libraries[ $name ] ) )
 			return preg_replace( '/\{(\d)\}/', preg_match( '/^([\d]+\.?)+$/', $version ) ? $version : '$1', self::$libraries[ $name ] );
-//		if ( ! isset( self::$libraries[ $name ] ) )
-//			return;
-//		$library = substr( $name , 0, strrpos( $name, '-' ) );
-//		if ( $library && ! self::$_instance->include->grep( '/(^|\/)' . $library . '\W/' ) && self::_library( $library ) )
-//			self::$_instance->append( $library, 'include' );
-		//return $name = preg_replace( '/\{(\d)\}/', preg_match( '/^([\d]+\.?)+$/', $version ) ? $version : '$1', self::$libraries[ $name ] );
 	}
 	static public function init ( $code = null, $type = null ) {
 		if ( ! self::$_instance )

@@ -1,5 +1,6 @@
 <?php
 namespace Tpl;
+
 function __autoload ( $class ) {
 	if ( class_exists( $class, true ) )
 		return true;
@@ -17,6 +18,7 @@ function __autoload ( $class ) {
 	require_once $file;
 	return true;
 }
+
 spl_autoload_register( __NAMESPACE__ . '\__autoload' );
 
 class Item extends \ArrayObject {
@@ -79,17 +81,14 @@ class Item extends \ArrayObject {
 		return $this;
 	}
 	protected function _indent ( $buffer ) {
-		return ( $this->_indent ?
-			preg_replace( '/(^|\r?\n)(?!=$)/', '$1' . $this->_indent, $buffer ) : 
-			$buffer
-		) . PHP_EOL;
+		return preg_replace( '/(^|\r?\n)(?!\s*$)/', '$1' . $this->_indent, $buffer ) . ( $this->_indent ? PHP_EOL : null );
 	}
 	protected function render () {
 		return $this->_indent( implode( PHP_EOL , $this->getArrayCopy() ) );
 	}
 }
 
-class CacheItem extends Item {
+class Cache extends Item {
 	protected $_id;
 	static public $_cache = array();
 	public function offsetSet ( $name, $value ) {
@@ -127,21 +126,12 @@ class CacheItem extends Item {
 		return isset( self::$_cache[ $id ] ) ? self::$_cache[ $id ] : false;
 	}
 }
-/*
-class Items extends Item {
-	static public $_instances = array();
-	static public function init ( $id = 'default', Item $item = null ) {
-		return isset( self::$_instances[ $id ] ) ? 
-			self::$_instances[ $id ] : 
-			self::$_instances[ $id ] = $item ?: new self();
-	}
-}
-*/
-class Template extends CacheItem {
+
+class Tpl extends Cache {
 	protected $_template;
-	static public $path = './Tpl';
+	static public $path = './tpl';
 	public function __construct ( $template = null ) {
-		$this->_template = $this->_path( $template ?: 'debug' , self::$path );
+		$this->_template = $this->_path( $template ?: 'helpers/debug' , self::$path );
 	}
 	static public function init ( $template = null ) {
 		return new self( $template );
@@ -189,4 +179,8 @@ class Template extends CacheItem {
 			return @unlink( $cache ) && false;
 		return file_get_contents( $cache );
 	}
+}
+
+function Tpl ( $template = null ) {
+	return new Tpl( $template );
 }
