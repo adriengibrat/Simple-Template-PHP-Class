@@ -1,6 +1,4 @@
 <?php
-namespace Tpl;
-
 function __autoload ( $class ) {
 	if ( class_exists( $class, true ) )
 		return true;
@@ -13,38 +11,33 @@ function __autoload ( $class ) {
 		$class = substr( $class, $separator + 1 );
 	}
 	$file .= str_replace( '_', DIRECTORY_SEPARATOR, $class ) . '.php';
-	if ( ! is_readable( $file ) )
+	if ( ! @include_once( $file ) )
 		return false;
-	require_once $file;
 	return true;
 }
-
 spl_autoload_register( __NAMESPACE__ . '\__autoload' );
-
-class Item extends \ArrayObject {
-	protected $_indent;
-	public function __construct () {}
-	static public function init () {
-		return new self();
+class Data extends \ArrayObject {
+	static public $filter;
+	static public function filter ( $data ) {
+		return is_callable( self::$filter ) ? call_user_func( self::$filter, $data ) : $data;
 	}
 	public function getArrayCopy () {
-		return array_map( function ( $value ) {
-			return $value instanceof Item ? (string) $value : $value;
-		}, parent::getArrayCopy() );
-	}
-	public function append ( $value ) {
-		parent::append( $value );
-		return $this;
+		return array_map( array( $this, 'filter' ), parent::getArrayCopy() );
 	}
 	public function exchangeArray ( $array ) {
 		parent::exchangeArray( $array );
 		return $this;
 	}
+	public function append ( $value ) {
+		parent::append( $value );
+		return $this;
+	}
 	public function prepend ( $value ) {
 		return $this->exchangeArray( array_merge( array( $value ), (array) $this ) );
 	}
-	public function grep ( $pattern ) {
-		return preg_grep( $pattern , (array) $this );
+	public function offsetGet ( $name ) {
+		if ( $this->offsetExists( $name ) )
+			return self::filter( parent::offsetGet( $name ) );
 	}
 	public function __set ( $name, $value ) {
 		return $this->offsetSet( $name, $value );
@@ -58,6 +51,24 @@ class Item extends \ArrayObject {
 	public function __isset ( $name ) {
 		return $this->offsetExists( $name );
 	}
+	public function grep ( $pattern ) {
+		return preg_grep( $pattern , (array) $this );
+	}
+}
+class Item extends Data {
+	protected $_indent;
+	public function __construct () {}
+	static public function init () {
+		return new self();
+	}
+	public function getArrayCopy () {
+		static $filter;
+		if ( ! $filter )
+			$filter = function ( $value ) {
+				return $value instanceof Item ? (string) $value : $value;
+			};
+		return array_map( $filter, parent::getArrayCopy() );
+	}
 	public function __toString () {
 		return $this->render();
 	}
@@ -68,7 +79,7 @@ class Item extends \ArrayObject {
 			$value[ $index ] = self::_safe( $item, $mode );
 		return $value;
 	}
-	public function set ( $name, $value, $safe = false ) {
+	public function set ( $name, $value = false, $safe = false ) {
 		if ( ! is_array( $name ) && ! $name instanceof Traversable )
 			$this->offsetSet( (string) $name, $safe ? self::_safe( $value, $safe ) : $value );
 		else
@@ -81,13 +92,12 @@ class Item extends \ArrayObject {
 		return $this;
 	}
 	protected function _indent ( $buffer ) {
-		return preg_replace( '/(^|\r?\n)(?!\s*$)/', '$1' . $this->_indent, $buffer ) . ( $this->_indent ? PHP_EOL : null );
+		return preg_replace( '/(^|\r?\n|\r)(?!\s*$)/', '$1' . $this->_indent, $buffer );
 	}
 	protected function render () {
 		return $this->_indent( implode( PHP_EOL , $this->getArrayCopy() ) );
 	}
 }
-
 class Cache extends Item {
 	protected $_id;
 	static public $_cache = array();
@@ -126,7 +136,6 @@ class Cache extends Item {
 		return isset( self::$_cache[ $id ] ) ? self::$_cache[ $id ] : false;
 	}
 }
-
 class Tpl extends Cache {
 	protected $_template;
 	static public $path = './tpl';
@@ -180,7 +189,6 @@ class Tpl extends Cache {
 		return file_get_contents( $cache );
 	}
 }
-
 function Tpl ( $template = null ) {
 	return new Tpl( $template );
 }

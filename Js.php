@@ -1,6 +1,4 @@
 <?php
-namespace Tpl;
-
 class Js extends Tpl {
 	const template = 'helpers/js';
 	static protected $_instance;

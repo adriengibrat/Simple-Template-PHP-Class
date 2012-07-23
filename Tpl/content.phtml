@@ -1,4 +1,4 @@
-<?php $this->js( 'ligne1;' );?>
+<?php $this->js( 'var line1 = ' );?>
 <table cellpadding="3" border="0" cellspacing="1" bgcolor="#CCCCCC">
 	<tr>
 		<td bgcolor="#F0F0F0">Id</td>
@@ -14,5 +14,5 @@
 		<td bgcolor="#FFFFFF" align="center"><?=($user['banned'] ? 'X' : '&nbsp;');?></td>
 	</tr>
 <?php endforeach; ?>
-<?php $this->js( 'ligne2();' );?>
+<?php $this->js( 'function line2 () {};' );?>
 </table>

@@ -1,6 +1,4 @@
 <?php
-namespace Tpl;
-
 class Style extends Item {
 	public $media;
 	public function __construct ( $media = null ) {
