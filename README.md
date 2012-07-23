@@ -89,7 +89,7 @@ Data::$filter = function ( $data ) { // Applied on access ($data->property / $da
 	return is_string( $data ) ? utf8_decode( $data ) : $data; // Decode every string
 };
 echo Tpl( 'layout' )
-	->set( new Data( array( 'title' => 'àéïôù', 'content' => ... ) ) ); // Passing array or Traversable is ok
+	->set( new Data( array( 'title' => 'àéïôù', 'content' => ... ) ) ); // Pass array / Traversable to set method
 // In the layout.phtml template file, $this->title is UTF8-decoded ;)
 ```
 ## Objects & API
