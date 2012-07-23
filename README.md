@@ -104,8 +104,8 @@ echo Tpl( 'layout' )
 Data features: fluid interface + add "prepend" + "grep" methods + automatic filtering / modification when getting data.
 ### Helpers
 <pre>
-- Js    -> Javascript helper, extending Tpl.
-- Css   -> CSS helper, extending Tpl.
+- Js    -> Javascript helper, extends Tpl.
+- Css   -> CSS helper, extends Tpl.
 	use: Style -> Item to store CSS style.
 </pre>
 ### Hierarchy
