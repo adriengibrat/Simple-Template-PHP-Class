@@ -101,7 +101,7 @@ echo Tpl( 'layout' )
 	- Cache -> Item with simple in memory caching, used to introduce cache interface.
 - Tpl   -> Template engine with file caching & extensible with helpers, extends Cache.
 </pre>
-Data features: fluid interface + add "prepend" + "grep" methods + automatic filtering / modification when getting data.
+Data features: fluid interface, add "prepend"& "grep" methods + automatic filtering / modification when getting data.
 ### Helpers
 <pre>
 - Js    -> Javascript helper, extends Tpl.
