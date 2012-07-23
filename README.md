@@ -64,8 +64,8 @@ $this->js( 'my/plugin/jquery.file.js' ) // Add jQuery plugin
 You can easily create you own helpers, just create a class with "init" static method.
 ```php
 <?php
-class Menu {
-	function init ( $links, $class = 'primary' ) {
+class Menu { // Basic menu helper
+	function init ( $links, $class = 'primary' ) { // Helpers need at least an init method
 		$menu = '<ul class="menu ' . $class '">' . PHP_EOL;
 		foreach ( (array) $links as $url => $text )
 			$menu .= '<li><a href="' . $url . '">' . $text . '</a></li>' . PHP_EOL;
@@ -76,7 +76,7 @@ class Menu {
 And simply use it in your template files.
 ```php
 <?php
-echo $this->menu( array( 'my/link' => 'My link' ) );
+echo $this->menu( array( 'my/link' => 'My link' ) ); // Calls the helper init method
 ```
 
 ### Data filtering
