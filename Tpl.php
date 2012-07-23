@@ -100,7 +100,7 @@ class Item extends Data {
 }
 class Cache extends Item {
 	protected $_id;
-	static public $_cache = array();
+	static protected $_cache = array();
 	public function offsetSet ( $name, $value ) {
 		$this->id( false );
 		parent::offsetSet( $name, $value );
