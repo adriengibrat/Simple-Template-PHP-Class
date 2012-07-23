@@ -8,7 +8,6 @@ class Style extends Item {
 		return new self( $media );
 	}
 }
-
 class Css extends Tpl {
 	const template = 'helpers/css';
 	public $media;

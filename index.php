@@ -1,5 +1,4 @@
 <?php
-namespace Tpl;
 require 'Tpl.php';
 header( 'Content-Type: text/html; charset=utf-8' );
 echo Tpl( 'index' )
