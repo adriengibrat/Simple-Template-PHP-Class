@@ -31,7 +31,8 @@ $Tpl = new Tpl( 'layout' );
 if ( $cache = $Tpl->cached( 'myCache', 3600, '/my/path' ) ) // Get /my/path/myCache.html cache (expires after 3600s)
 	echo $cache;
 else
-	echo $Tpl->set( 'content', ... ) // Build content html
+	echo $Tpl
+		->set( 'content', ... ) // Build content html
 		->cache( 'myCache', '/my/path' ); // Save cache in /my/path/myCache.html
 // Or generate automatic cache id
 echo $Tpl = new Tpl( 'layout' )
@@ -76,6 +77,20 @@ And simply use it in your template files.
 ```php
 <?php
 echo $this->menu( array( 'my/link' => 'My link' ) );
+```
+
+### Data filtering
+You can use Data objects to store / handle your data.
+By setting Data::$filter callback, your filter is applied when accessing data.
+By example, you could use data filtering to resolve basic encoding problem (PHP code in UTF-8, output HTML in ISO-*)
+```php
+<?php
+Data::$filter = function ( $data ) { // Applied on access ($data->property / $data['property'])
+	return is_string( $data ) ? utf8_decode( $data ) : $data; // Decode every string
+};
+echo Tpl( 'layout' )
+	->set( new Data( array( 'title' => 'àéïôù', 'content' => ... ) ) ); // Passing array or Traversable is ok
+// In the layout.phtml template file, $this->title is UTF8-decoded ;)
 ```
 ## Objects & API
 ### Tpl objects
