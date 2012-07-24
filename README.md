@@ -26,12 +26,13 @@ echo new Tpl( 'layout' ) // Get new template from file ([path/]filename[.extenti
 ```php
 <?php
 require 'Tpl.php';
-$Tpl = new Tpl( 'layout' );
 // Classic cache handling
-$cache = $Tpl->cached( 'myCache', 3600, '/my/path' ); // Get /my/path/myCache.html cache (expires after 3600s)
-if ( $cache )
+$Tpl = new Tpl( 'layout' );
+// Get /my/path/myCache.html cache (expires after 3600s)
+$cache = $Tpl->cached( 'myCache', 3600, '/my/path' ); 
+if ( $cache ) // Cache exists, use it
 	echo $cache;
-else
+else // Or process
 	echo $Tpl
 		->set( 'content', ... ) // Build content html
 		->cache( 'myCache', '/my/path' ); // Save cache in /my/path/myCache.html
