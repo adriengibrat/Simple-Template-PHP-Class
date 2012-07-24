@@ -8,7 +8,7 @@ echo new Tpl( 'layout' ) // Get new template from file ([path/]filename[.extenti
   ->set( 'title', 'My Test Page') // Set simple data like page title
   ->set( 'content', // Set complex data like another template
 		Tpl( 'content' ) // Use new Tpl syntax or Tpl function alias
-		->set( 'users', array( array( // content.phtml template is a "user" loop, give it an array of data
+		->set( 'users', array( array( // this template is a "user" loop, it needs array of data
 			'id'     => 1,
 			'name'   => 'user name',
 			'email'  => 'test@test.com',
@@ -28,7 +28,8 @@ echo new Tpl( 'layout' ) // Get new template from file ([path/]filename[.extenti
 require 'Tpl.php';
 $Tpl = new Tpl( 'layout' );
 // Classic cache handling
-if ( $cache = $Tpl->cached( 'myCache', 3600, '/my/path' ) ) // Get /my/path/myCache.html cache (expires after 3600s)
+$cache = $Tpl->cached( 'myCache', 3600, '/my/path' ); // Get /my/path/myCache.html cache (expires after 3600s)
+if ( $cache )
 	echo $cache;
 else
 	echo $Tpl
@@ -37,8 +38,8 @@ else
 // Or generate automatic cache id
 echo $Tpl = new Tpl( 'layout' )
 	->set( 'content', ... )
-	->cache(); // Cache method can be called without any argument / without id: ->cache( null, '/my/path' )
-$cacheId = $Tpl->id(); // Get the (almost unique md5) hash id of the cached file (/{sys_tempdir}/{$cacheId}.html)
+	->cache(); // Cache method can be called without id, ->cache( null, '/my/path' ) is ok
+$cacheId = $Tpl->id(); // Get md5 hash id of the cached file (/{sys_tempdir}/{$cacheId}.html)
 ```
 * Expire duration is given in second, default is 3600 seconds
 * If path is ommited, it use system temp directory
@@ -51,7 +52,7 @@ In main template "layout.phtml" file:
 echo $this->css( 'style.css' ) // Append style.css (& "echo" will print all added css!)
 		  ->append( 'print.css', 'print' ); // Append file with print media attribute
 		  ->append( 'handheld.css', 'phone' ); // Css offers usefull preset media queries alias
-echo $this->js()->prepend( 'jquery' ); // Print all js prepended by latest jQuery version from Goggle CDN
+echo $this->js()->prepend( 'jquery' ); // Print all js prepended by latest jQuery from Goggle CDN
 ```
 In sub template "content.phtml" file:
 ```php
@@ -88,8 +89,10 @@ By example, you could use data filtering to resolve basic encoding problem (PHP 
 Data::$filter = function ( $data ) { // Applied on access ($data->property / $data['property'])
 	return is_string( $data ) ? utf8_decode( $data ) : $data; // Decode every string
 };
-echo Tpl( 'layout' )
-	->set( new Data( array( 'title' => 'àéïôù', 'content' => ... ) ) ); // Pass array / Traversable to set method
+echo Tpl( 'layout' ) // Passing array or Traversable to set method allow to set multiple properties 
+	->set( new Data(
+		array( 'title' => 'àéïôù', 'content' => ... )
+	) );
 // In the layout.phtml template file, $this->title is UTF8-decoded ;)
 ```
 ## Objects & API
