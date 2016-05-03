@@ -87,7 +87,7 @@ class Item extends Data {
 				$this->set( $_name, $_value, $value );
 		return $this;
 	}
-	public function indent ( $indent = 1, $indentation = "\t" ) {
+	public function indent ( $indent = 1, $indentation = "  " ) {
 		$this->_indent = implode( '', array_fill( 0, $indent, $indentation ) );
 		return $this;
 	}
@@ -114,7 +114,7 @@ class Cache extends Item {
 		return parent::exchangeArray( $array );
 	}
 	public function __toString () {
-		return $this->cached( $this->id() ) ?: $this->cache();
+		return $this->cached( $this->id() ) ?: $this->caching();
 	}
 	protected function id ( $id = null ) {
 		if ( $id === false )
@@ -123,11 +123,11 @@ class Cache extends Item {
 			return $id;
 		return $this->_id ?: ( $this->_id = md5( serialize( $this ) ) );
 	}
-	public function indent ( $indent = 1, $indentation = "\t" ) {
+	public function indent ( $indent = 1, $indentation = "  " ) {
 		$this->id( false );
 		return parent::indent( $indent, $indentation );
 	}
-	public function cache ( $id = null ) {
+	public function caching ( $id = null ) {
 		return self::$_cache[ $this->id( $id ) ] = $this->render();
 	}
 	public function cached ( $id = null ) {
@@ -146,10 +146,10 @@ class Tpl extends Cache {
 		return new self( $template );
 	}
 	public function __toString () {
-		return parent::cached( $this->id() ) ?: parent::cache();
+		return parent::cached( $this->id() ) ?: parent::caching();
 	}
 	public function __call ( $method, $arguments ) {
-		$method =  __NAMESPACE__ . '\\' . preg_replace('/(^|_)([a-z])/uie', '"$1".strtoupper("$2")', $method );
+		$method =  __NAMESPACE__ . '\\' . preg_replace_callback('/(^|_)([a-z])/ui', create_function ('$matches', 'return "$matches[1]".strtoupper($matches[2]);'), $method );
 		if ( class_exists( $method ) && is_callable( $method . '::init' ) )
 			return call_user_func_array( $method . '::init', $arguments );
 	}
@@ -169,7 +169,7 @@ class Tpl extends Cache {
 		ob_end_clean();
 		return $this->_indent( $buffer );
 	}
-	public function cache ( $id = null, $path = null ) {
+	public function caching ( $id = null, $path = null ) {
 		self::$_cache[ $cache = $this->id( $id ) ] = $this->render();
 		if ( $path !== false )
 			if ( file_put_contents( $this->_path ( $cache, $path, '.html' ), self::$_cache[ $cache ] ) === false )
